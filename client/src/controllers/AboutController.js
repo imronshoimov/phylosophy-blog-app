@@ -1,13 +1,13 @@
 const path = require("path/posix");
 
-class Home {
+class About {
   get(req, res) {
     try {
-      res.sendFile(path.join(process.cwd(), "src", "views", "index.html"));
+      res.sendFile(path.join(process.cwd(), "src", "views", "about.html"));
     } catch (error) {
       res.send(error.message);
     }
   }
 }
 
-module.exports = Home;
+module.exports = About;
