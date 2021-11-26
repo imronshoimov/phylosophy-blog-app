@@ -1,7 +1,10 @@
 const homeRouter = require("./home");
-const categories = require("./categories");
+const categoriesRouter = require("./categories");
+const blogsRouter = require('./blogs');
 
 module.exports = [
     homeRouter,
-    categories
+    categoriesRouter,
+    categoriesRouter,
+    blogsRouter
 ]
