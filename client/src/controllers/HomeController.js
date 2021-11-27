@@ -1,4 +1,4 @@
-const path = require("path/posix");
+const path = require("path");
 
 class Home {
   get(req, res) {

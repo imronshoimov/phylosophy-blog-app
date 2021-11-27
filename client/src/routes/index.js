@@ -3,6 +3,7 @@ const categoriesRouter = require("./categories");
 const blogsRouter = require("./blogs");
 const aboutRourer = require("./about");
 const contactRouter = require("./contact");
+const styleRouter = require("./style");
 
 module.exports = [
   homeRouter,
@@ -11,4 +12,5 @@ module.exports = [
   blogsRouter,
   aboutRourer,
   contactRouter,
+  styleRouter,
 ];
