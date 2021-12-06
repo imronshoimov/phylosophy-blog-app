@@ -5,10 +5,11 @@ import http from "http";
 const books = [
     { id: 1, name: "Nimadir" },
     { id: 2, name: "Birnima" },
-    { id: 3, name: "Va nima" }
+    { id: 3, name: "Va nima" },
+    { id: 4, name: "Va nima" }
 ]
 
-const typeDefs = gql`
+const typeDefs = gql(`
     type Query {
         books: [Book!]!
     }
@@ -17,7 +18,7 @@ const typeDefs = gql`
         id: Int
         name: String!
     }
-`
+`)
 
 const resolvers = {
     Query: {
