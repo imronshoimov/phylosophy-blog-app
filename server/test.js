@@ -1,0 +1,34 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var a = 1;
+var b = true;
+var c = 'Imron';
+var d = 1 || false;
+var e = [1, 2, 3, 4];
+var f = [1, true, 'a', false];
+var ColorRed = 0;
+var ColorGreen = 1;
+var ColorBlue = 2;
+var Color;
+(function (Color) {
+    Color[Color["Red"] = 0] = "Red";
+    Color[Color["Green"] = 1] = "Green";
+    Color[Color["Blue"] = 2] = "Blue";
+    Color[Color["Purple"] = 3] = "Purple";
+})(Color || (Color = {}));
+var backgroundColor = Color.Red;
+var message;
+message = 'abc';
+var endsWithC = message.endsWith('c');
+var alternativeWay = message.endsWith('c');
+console.log(endsWithC);
+console.log(alternativeWay);
+var log = function (a) {
+    console.log(a.x + a.y);
+};
+console.log({ x: 1, y: 2 });
+var doLog = function (id) { return console.log(id); };
+var test2_1 = require("./test2");
+var point = new test2_1.Points(1);
+point.X = 10;
+console.log(point.X);
