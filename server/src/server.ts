@@ -4,10 +4,17 @@ import http from 'http'
 
 const data = [
   { id: 1, title: 'Math Textbook', author: 'Jane Smith', classes: ['Math'] },
-  { id: 2, title: 'Coloring Book', author: 'Joe Smith', colors: ['red'] },
+  { id: 2, title: 'Nimdir Book', author: 'Imron Smith', colors: ['red'] },
+  { id: 3, title: 'Kimdir Book', author: 'Joe Shoimov', colors: ['Math'] },
+  { id: 4, title: 'Qaysidir Book', author: 'Imron Shoimov', colors: ['red'] },
 ]
 
 const typeDefs = gql(`
+  directive @uppercase on FIELD_DEFINITION
+  directive @deprecated(
+    reason: String = "No longer available"
+  ) on FIELD_DEFINITION | ENUM_VALUE
+
   interface Book {
     title: String!
     author: String!
@@ -26,7 +33,8 @@ const typeDefs = gql(`
   }
 
   type Query {
-    books(id: Int!): [Book!]!
+    books: [Book!]!
+    hello: String @deprecated
   }
 `)
 
@@ -48,8 +56,9 @@ const resolvers = {
   },
   Query: {
     books: (_: any, { id }: any) => {
-      return [data.find((el) => el.id == id)]
+      return data
     },
+    hello: () => 'helloSSS',
   },
 }
 
