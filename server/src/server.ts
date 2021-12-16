@@ -2,34 +2,54 @@ import express from 'express'
 import { ApolloServer, gql } from 'apollo-server-express'
 import http from 'http'
 
-const users = [
-  { id: 1, name: 'Nimadir', email: 'i1@gmail.com', role: 'teacher' },
-  { id: 2, name: 'Birnima', email: 'i2@gmail.com', role: 'developer' },
-  { id: 3, name: 'Va nima', email: 'i3@gmail.com', role: 'hacker' },
-  { id: 4, name: 'Va nima', email: 'i4@gmail.com', role: 'mentor' },
+const data = [
+  { id: 1, title: 'Math Textbook', author: 'Jane Smith', classes: ['Math'] },
+  { id: 2, title: 'Coloring Book', author: 'Joe Smith', colors: ['red'] },
 ]
 
 const typeDefs = gql(`
-    type Query {
-        users(
-            includeId: Boolean = true,
-            includeName: Boolean = true,
-            includeEmail: Boolean = true,
-            includeRole: Boolean = true
-        ): [User!]!
-    }
+  interface Book {
+    title: String!
+    author: String!
+  }
 
-    type User {
-        id: @include(if: includeId)
-        name: @include(if: includeId)   
-        email: @include(if: includeId)
-        role: @include(if: includeId)
-    }
+  type TextBook implements Book {
+    title: String!
+    author: String!
+    classes: [String]
+  } 
+
+  type ColoringBook implements Book {
+    title: String!
+    author: String!
+    colors: [String]
+  }
+
+  type Query {
+    books(id: Int!): [Book!]!
+  }
 `)
 
 const resolvers = {
+  Book: {
+    __resolveType(obj: any, context: any, info: any) {
+      if (obj.classes) {
+        return 'TextBook'
+      }
+
+      if (obj.colors) {
+        return 'ColoringBook'
+      }
+
+      console.log(obj)
+
+      return null
+    },
+  },
   Query: {
-    users: () => users,
+    books: (_: any, { id }: any) => {
+      return [data.find((el) => el.id == id)]
+    },
   },
 }
 
