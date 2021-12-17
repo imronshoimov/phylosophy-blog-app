@@ -1,4 +1,5 @@
 import express from 'express'
+import { Request } from 'express'
 import { ApolloServer, gql } from 'apollo-server-express'
 import http from 'http'
 
@@ -7,6 +8,17 @@ const data = [
   { id: 2, title: 'Nimdir Book', author: 'Imron Smith', colors: ['red'] },
   { id: 3, title: 'Kimdir Book', author: 'Joe Shoimov', colors: ['Math'] },
   { id: 4, title: 'Qaysidir Book', author: 'Imron Shoimov', colors: ['red'] },
+]
+
+const users = [
+  {
+    id: '1',
+    name: 'Elizabeth Bennet',
+  },
+  {
+    id: '2',
+    name: 'Fitzwilliam Darcy',
+  },
 ]
 
 const typeDefs = gql(`
@@ -32,9 +44,15 @@ const typeDefs = gql(`
     colors: [String]
   }
 
+  type User {
+    id: ID!
+    name: String!
+  }
+
   type Query {
     books: [Book!]!
     hello: String @deprecated
+    user(id: ID!): User!
   }
 `)
 
@@ -59,6 +77,11 @@ const resolvers = {
       return data
     },
     hello: () => 'helloSSS',
+    user: (_: any, args: any, context: any) => {
+      console.log(context)
+
+      return users.find((el) => el.id == args.id)
+    },
   },
 }
 
@@ -68,6 +91,7 @@ async function startApolloServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: ({ req }) => ({ token: req?.headers?.token }),
   })
 
   await server.start()
@@ -82,3 +106,6 @@ async function startApolloServer() {
 }
 
 startApolloServer()
+function getScope(authorization: string | undefined) {
+  throw new Error('Function not implemented.')
+}
