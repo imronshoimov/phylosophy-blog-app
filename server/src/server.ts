@@ -1,7 +1,8 @@
 import express from 'express'
-import { Request } from 'express'
-import { ApolloServer, gql } from 'apollo-server-express'
+import { ApolloServer, gql, UserInputError } from 'apollo-server-express'
 import http from 'http'
+import { ApolloError } from 'apollo-server-core'
+import { MyError } from './error'
 
 const data = [
   { id: 1, title: 'Math Textbook', author: 'Jane Smith', classes: ['Math'] },
@@ -79,6 +80,13 @@ const resolvers = {
     hello: () => 'helloSSS',
     user: (_: any, args: any, context: any) => {
       console.log(context)
+
+      if (args.id < 1) {
+        // throw new UserInputError('Bunday id li user yoq', {
+        //   argumentName: 'id',
+        // })
+        throw new ApolloError('Bunday id li error yoq')
+      }
 
       return users.find((el) => el.id == args.id)
     },
