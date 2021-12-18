@@ -1,8 +1,9 @@
-import express from 'express'
+import express, { Application } from 'express'
 import { ApolloServer, gql, UserInputError } from 'apollo-server-express'
 import http from 'http'
 import { ApolloError } from 'apollo-server-core'
-import { MyError } from './error'
+import { GraphQLUpload, graphqlUploadExpress } from 'graphql-upload'
+import { finished } from 'stream/promises'
 
 const data = [
   { id: 1, title: 'Math Textbook', author: 'Jane Smith', classes: ['Math'] },
@@ -23,6 +24,8 @@ const users = [
 ]
 
 const typeDefs = gql(`
+  scalar Upload
+
   directive @uppercase on FIELD_DEFINITION
   directive @deprecated(
     reason: String = "No longer available"
@@ -50,10 +53,21 @@ const typeDefs = gql(`
     name: String!
   }
 
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
   type Query {
     books: [Book!]!
     hello: String @deprecated
     user(id: ID!): User!
+    file: File!
+  }
+
+  type Mutation {
+    singleUpload(file: Upload): File!
   }
 `)
 
@@ -91,10 +105,23 @@ const resolvers = {
       return users.find((el) => el.id == args.id)
     },
   },
+  Mutation: {
+    singleUpload: async (_: any, { file }: any) => {
+      const { createReadStream, filename, mimetype, encoding } = await file
+
+      const stream = createReadStream()
+
+      const out = require('fs').createWriteStream('local-file-output.txt')
+      stream.pipe(out)
+      await finished(out)
+
+      return { filename, mimetype, encoding }
+    },
+  },
 }
 
 async function startApolloServer() {
-  const app = express()
+  const app: Application = express()
   const httpServer = http.createServer(app)
   const server = new ApolloServer({
     typeDefs,
@@ -103,6 +130,8 @@ async function startApolloServer() {
   })
 
   await server.start()
+
+  app.use(graphqlUploadExpress())
 
   server.applyMiddleware({ app })
 
